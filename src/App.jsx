@@ -1,15 +1,28 @@
-import ctdLogo from './assets/mono-blue-logo.svg';
+import { useState } from 'react';
 import './App.css';
+import inventoryData from './assets/inventory.json'
+import Header from '../Header';
+import ProductList from '../InventoryList';
+import ProductCard from '../ProductCard';
 
 function App() {
+  const [inventory, setInventory] = useState(inventoryData.inventory);
+
+  function promoteItem() {
+    return (
+      <ProductCard 
+        name="Limited Edition Tee!"
+        description="Special limited edition neon green shirt with a metallic Code the Dream Logo shinier than the latest front-end framework! Signed by the legendary Frank!"
+      />
+    );
+  }
+
   return (
-    <div className="coming-soon">
-      <h1>CTD Swag</h1>
-      <div style={{ height: 100, width: 100 }}>
-        <img src={ctdLogo} alt="Code The Dream Logo" />
-      </div>
-      <h2>Coming Soon...</h2>
-    </div>
+    <main>
+      <Header />
+      <ProductList inventory={inventory}>{promoteItem()}</ProductList>
+      {/*invoking promoted item between the tags inserts the ItemCard*/}
+    </main>
   );
 }
 
