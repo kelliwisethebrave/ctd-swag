@@ -1,5 +1,5 @@
 import ProductCardVariants from './ProductCardVariants';
-import placeholder from './assets/placeholder.png';
+import placeholder from '../assets/placeholder.png';
 import { useState } from 'react';
 
 function ProductCard({ product, handleAddItemToCart }) {

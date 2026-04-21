@@ -1,10 +1,25 @@
-import { useState } from 'react';
-import placeholder from './assets/placeholder.png';
+import { useState, useEffect } from 'react';
+import placeholder from '../../assets/placeholder.png';
+import CartItem from './CartItem';
 
 //`handleCloseCart` is not made yet but we know we will need it
-function Cart({ cart, handleCloseCart, setCart }) {
+function Cart({
+  cart,
+  handleCloseCart,
+  setCart,
+  isCartSyncing,
+  handleSyncCart,
+}) {
   const [workingCart, setWorkingCart] = useState(cart);
   const [isFormDirty, setIsFormDirty] = useState(false);
+
+  useEffect(() => {
+    if (isFormDirty || isCartSyncing) {
+      //prevents setWorkingCart from running
+      return;
+    }
+    setWorkingCart(cart);
+  }, [cart, isFormDirty, isCartSyncing]);
 
   function getWorkingCartPrice() {
     //using `.toFixed` because floating point arithmetic
@@ -56,8 +71,9 @@ function Cart({ cart, handleCloseCart, setCart }) {
     event.preventDefault();
     //call setCart with workingCart value
     const cleanedCart = removeEmptyItems(workingCart);
-    setCart(cleanedCart);
-    setWorkingCart(cleanedCart);
+    //setCart(cleanedCart);
+    //setWorkingCart(cleanedCart);
+    handleSyncCart(cleanedCart);
     setIsFormDirty(false);
   }
 
@@ -76,30 +92,11 @@ function Cart({ cart, handleCloseCart, setCart }) {
             <ul className="cartList">
               {workingCart.map((item) => {
                 return (
-                  <li className="cartListItem" key={item.id}>
-                    <img src={placeholder} alt=" " />
-                    <h2>{item.baseName}</h2>
-                    {item.variantName !== 'Default' ? (
-                      <p>{item.variantName}</p>
-                    ) : null}
-                    <div className="cartListItemSubtotal">
-                      <label>
-                        Count:{' '}
-                        <input
-                          type="number"
-                          value={item.itemCount}
-                          onChange={(event) =>
-                            handleUpdateField({ event, id: item.id })
-                          }
-                        />
-                      </label>
-
-                      <p>
-                        Subtotal: $
-                        {(item.price * item.itemCount).toFixed(2) || 0}
-                      </p>
-                    </div>
-                  </li>
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    onHandleItemUpdate={handleUpdateField}
+                  />
                 );
               })}
             </ul>
